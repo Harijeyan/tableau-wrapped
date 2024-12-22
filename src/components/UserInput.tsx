@@ -22,7 +22,7 @@ export default function UserInput({ onSubmit, isLoading = false }: UserInputProp
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter Tableau Public username"
+          placeholder="Enter Tableau Public username from your profile URL"
           className="w-full bg-[#333333] text-[#EEEEEE] px-4 py-3 rounded-lg mb-4 placeholder-gray-500"
           disabled={isLoading}
         />
