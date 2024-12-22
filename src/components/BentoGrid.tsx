@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { TableauStats } from '@/types';
 import { FaUsers, FaUser, FaEye, FaStar } from 'react-icons/fa';
 import html2canvas from 'html2canvas';
@@ -26,12 +26,60 @@ const getLegacyBadge = (joinDate: number | null) => {
   return null;
 };
 
+const trackDownload = async (username: string) => {
+  try {
+    // Only track in production
+    if (process.env.NODE_ENV === 'production') {
+      await fetch('/api/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          event: 'download',
+          username: username
+        })
+      });
+
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'download_wrapped', {
+          username: username,
+          timestamp: new Date().toISOString(),
+          environment: 'production'
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error tracking download:', error);
+  }
+};
+
 export default function BentoGrid({ stats }: BentoGridProps) {
   const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'app_start', {
+        timestamp: new Date().toISOString()
+      });
+    }
+  }, []);
+
+  const handleError = (error: Error) => {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'error', {
+        error_message: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  };
 
   const handleDownload = async () => {
     if (gridRef.current) {
       try {
+        // Track the download
+        await trackDownload(stats.profile.name);
+        
         // Wait for everything to load
         await document.fonts.ready;
         await Promise.all([...document.fonts].map(font => font.load()));
@@ -43,45 +91,42 @@ export default function BentoGrid({ stats }: BentoGridProps) {
           });
         }));
 
-        // Create temporary container
+        // Create temporary container with padding
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'absolute';
         tempContainer.style.left = '-9999px';
+        tempContainer.style.padding = '40px'; // Add padding to prevent cropping
         document.body.appendChild(tempContainer);
 
         // Clone and preserve exact styles
         const clone = gridRef.current.cloneNode(true) as HTMLElement;
-        clone.style.width = '606px';
-        clone.style.height = '550px';
-        clone.style.transform = 'none';
-        clone.style.padding = '24px'; // Ensure consistent padding
+        
+        // Ensure full height capture
+        const computedStyle = window.getComputedStyle(gridRef.current);
+        clone.style.width = computedStyle.width;
+        clone.style.minHeight = computedStyle.height;
+        clone.style.height = 'auto'; // Allow height to expand
+        clone.style.padding = computedStyle.padding;
         tempContainer.appendChild(clone);
 
         // Force all text styles to be computed
         const textElements = clone.getElementsByTagName('*');
         for (const el of textElements) {
           if (el instanceof HTMLElement) {
-            el.style.lineHeight = window.getComputedStyle(el).lineHeight;
-            el.style.margin = window.getComputedStyle(el).margin;
-            el.style.padding = window.getComputedStyle(el).padding;
+            const style = window.getComputedStyle(el);
+            el.style.fontSize = style.fontSize;
+            el.style.lineHeight = style.lineHeight;
+            el.style.padding = style.padding;
+            el.style.margin = style.margin;
           }
         }
 
-        // Capture with exact dimensions
+        // Capture the exact current layout
         const canvas = await html2canvas(clone, {
           scale: 2,
           useCORS: true,
           backgroundColor: '#FFFFFF',
-          width: 606,
-          height: 550,
-          logging: false,
-          onclone: (doc) => {
-            const element = doc.getElementById('bento-grid');
-            if (element) {
-              element.style.width = '606px';
-              element.style.height = '550px';
-            }
-          }
+          logging: false
         });
 
         // Cleanup
@@ -94,6 +139,7 @@ export default function BentoGrid({ stats }: BentoGridProps) {
         link.click();
       } catch (error) {
         console.error('Error generating image:', error);
+        handleError(error);
       }
     }
   };
@@ -119,13 +165,14 @@ export default function BentoGrid({ stats }: BentoGridProps) {
         {/* First Row - Profile Cards */}
         <div className="grid grid-cols-2 sm:flex gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Profile Image */}
-          <div className="w-full sm:w-[124px] h-[124px] bg-[#F0F0F0] rounded-xl flex-shrink-0">
+          <div className="w-full sm:w-[124px] h-[124px] bg-[#F0F0F0] rounded-xl flex-shrink-0 overflow-hidden">
             <img 
               src={`/api/proxy?url=${encodeURIComponent(stats.profile.avatarUrl)}`}
               alt="Profile"
               className="w-full h-full rounded-xl object-cover"
-              width={124}
-              height={124}
+              style={{
+                objectPosition: 'center center'
+              }}
             />
           </div>
 
