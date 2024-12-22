@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import { TableauStats } from '@/types';
 import { FaUsers, FaUser, FaEye, FaStar } from 'react-icons/fa';
 import html2canvas from 'html2canvas';
-import Image from 'next/image';
 
 interface BentoGridProps {
   stats: TableauStats;
@@ -110,11 +109,9 @@ export default function BentoGrid({ stats }: BentoGridProps) {
           <h1 className="text-black font-bold text-[14px] sm:text-[16px] mb-2 sm:mb-0">
             {stats.profile.name.split(' ')[0]}&apos;s Tableau Public Journey
           </h1>
-          <Image 
+          <img 
             src="/images/tableau-public-logo.png" 
             alt="Tableau Public" 
-            width={96}
-            height={96}
             className="w-[80px] sm:w-[96px] h-auto object-contain" 
           />
         </div>
@@ -123,7 +120,7 @@ export default function BentoGrid({ stats }: BentoGridProps) {
         <div className="grid grid-cols-2 sm:flex gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Profile Image */}
           <div className="w-full sm:w-[124px] h-[124px] bg-[#F0F0F0] rounded-xl flex-shrink-0">
-            <Image 
+            <img 
               src={`/api/proxy?url=${encodeURIComponent(stats.profile.avatarUrl)}`}
               alt="Profile"
               className="w-full h-full rounded-xl object-cover"
@@ -176,11 +173,9 @@ export default function BentoGrid({ stats }: BentoGridProps) {
           {/* Row 1 on mobile, part of first row on desktop */}
           <div className="bg-[#F0F0F0] rounded-xl p-4">
             {/* Workbooks Card */}
-            <Image 
+            <img 
               src="/images/twbx-thumb.png" 
               alt="Workbooks" 
-              width={28}
-              height={28}
               className="w-[28px] h-[28px] mb-2" 
             />
             <div className="space-y-1">
