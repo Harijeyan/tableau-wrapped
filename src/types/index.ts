@@ -10,15 +10,22 @@ export interface TableauProfile {
 }
 
 export interface TableauStats {
-  profile: TableauProfile;
+  profile: {
+    name: string;
+    title: string;
+    avatarUrl: string;
+    totalFollowers: number;
+    totalFollowing: number;
+    joinDate: number | null;
+  };
   stats: {
-    yearsOnPlatform: number;
-    monthsOnPlatform: number;
-    daysOnPlatform: number;
     totalWorkbooks: number;
     totalViews: number;
     totalFavorites: number;
+    yearsOnPlatform: number;
+    monthsOnPlatform: number;
+    daysOnPlatform: number;
   };
-  workbooks: any[];
-  generatedAt: string;
 }
+
+export type { DataType };

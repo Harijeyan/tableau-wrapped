@@ -34,10 +34,6 @@ export default function Home() {
     }
   };
 
-  const handleDownload = () => {
-    // Implement download functionality
-  };
-
   return (
     <div className="min-h-screen">
       <h1 className="text-white text-4xl font-semibold text-center pt-24 mb-8">

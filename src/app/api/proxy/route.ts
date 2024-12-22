@@ -16,7 +16,8 @@ export async function GET(request: Request) {
         'Access-Control-Allow-Origin': '*'
       }
     });
-  } catch (error) {
-    return new Response('Failed to fetch image', { status: 500 });
+  } catch (err) {
+    console.error('Error occurred:', err);
+    return new Response('Error occurred', { status: 500 });
   }
 } 

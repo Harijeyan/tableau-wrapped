@@ -4,10 +4,10 @@ import { useRef } from 'react';
 import { TableauStats } from '@/types';
 import { FaUsers, FaUser, FaEye, FaStar } from 'react-icons/fa';
 import html2canvas from 'html2canvas';
+import Image from 'next/image';
 
 interface BentoGridProps {
   stats: TableauStats;
-  username: string;
 }
 
 const formatNumber = (num: number) => {
@@ -20,14 +20,14 @@ const getLegacyBadge = (joinDate: number | null) => {
   if (joinDate === null || joinDate === undefined || joinDate === 0) {
     return {
       badge: "Legacy Creator 🏆",
-      description: "Part of Tableau's history since the early days",
+      description: "Part of Tableau&apos;s history since the early days",
       class: "legacy-member"
     };
   }
   return null;
 };
 
-export default function BentoGrid({ stats, username }: BentoGridProps) {
+export default function BentoGrid({ stats }: BentoGridProps) {
   const gridRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
@@ -60,7 +60,7 @@ export default function BentoGrid({ stats, username }: BentoGridProps) {
 
         // Force all text styles to be computed
         const textElements = clone.getElementsByTagName('*');
-        for (let el of textElements) {
+        for (const el of textElements) {
           if (el instanceof HTMLElement) {
             el.style.lineHeight = window.getComputedStyle(el).lineHeight;
             el.style.margin = window.getComputedStyle(el).margin;
@@ -108,11 +108,13 @@ export default function BentoGrid({ stats, username }: BentoGridProps) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6">
           <h1 className="text-black font-bold text-[14px] sm:text-[16px] mb-2 sm:mb-0">
-            {stats.profile.name.split(' ')[0]}'s Tableau Public Journey
+            {stats.profile.name.split(' ')[0]}&apos;s Tableau Public Journey
           </h1>
-          <img 
+          <Image 
             src="/images/tableau-public-logo.png" 
             alt="Tableau Public" 
+            width={96}
+            height={96}
             className="w-[80px] sm:w-[96px] h-auto object-contain" 
           />
         </div>
@@ -121,10 +123,12 @@ export default function BentoGrid({ stats, username }: BentoGridProps) {
         <div className="grid grid-cols-2 sm:flex gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Profile Image */}
           <div className="w-full sm:w-[124px] h-[124px] bg-[#F0F0F0] rounded-xl flex-shrink-0">
-            <img 
+            <Image 
               src={`/api/proxy?url=${encodeURIComponent(stats.profile.avatarUrl)}`}
               alt="Profile"
               className="w-full h-full rounded-xl object-cover"
+              width={124}
+              height={124}
             />
           </div>
 
@@ -146,7 +150,7 @@ export default function BentoGrid({ stats, username }: BentoGridProps) {
             <div className="h-full flex flex-col justify-between">
               {getLegacyBadge(stats.profile.joinDate) ? (
                 <>
-                  <p className="text-[10px] font-medium text-black">You're publishing Workbooks as a</p>
+                  <p className="text-[10px] font-medium text-black">You&apos;re publishing Workbooks as a</p>
                   <h2 className="text-[14px] font-semibold text-black">
                     {getLegacyBadge(stats.profile.joinDate)?.badge}
                   </h2>
@@ -156,11 +160,11 @@ export default function BentoGrid({ stats, username }: BentoGridProps) {
                 </>
               ) : (
                 <>
-                  <p className="text-[10px] font-medium text-black">You're publishing Workbooks since,</p>
+                  <p className="text-[10px] font-medium text-black">You&apos;re publishing Workbooks since,</p>
                   <h2 className="text-[14px] font-semibold text-black">
                     {stats.stats.yearsOnPlatform} years, {stats.stats.monthsOnPlatform} months and {stats.stats.daysOnPlatform} days
                   </h2>
-                  <p className="text-[10px] font-medium text-[#5C5C5C]">It's a journey of perseverance</p>
+                  <p className="text-[10px] font-medium text-[#5C5C5C]">It&apos;s a journey of perseverance</p>
                 </>
               )}
             </div>
@@ -172,9 +176,15 @@ export default function BentoGrid({ stats, username }: BentoGridProps) {
           {/* Row 1 on mobile, part of first row on desktop */}
           <div className="bg-[#F0F0F0] rounded-xl p-4">
             {/* Workbooks Card */}
-            <img src="/images/twbx-thumb.png" alt="Workbooks" className="w-[28px] h-[28px] mb-2" />
+            <Image 
+              src="/images/twbx-thumb.png" 
+              alt="Workbooks" 
+              width={28}
+              height={28}
+              className="w-[28px] h-[28px] mb-2" 
+            />
             <div className="space-y-1">
-              <p className="text-[10px] font-medium text-black">You've published</p>
+              <p className="text-[10px] font-medium text-black">You&apos;ve published</p>
               <h2 className="text-[14px] font-semibold text-black">{formatNumber(stats.stats.totalWorkbooks)}</h2>
               <p className="text-[10px] font-medium text-[#5C5C5C]">Tableau Workbooks</p>
             </div>
@@ -183,7 +193,7 @@ export default function BentoGrid({ stats, username }: BentoGridProps) {
             {/* Followers Card */}
             <FaUsers className="text-[28px] text-[#28d979] mb-2" />
             <div className="space-y-1">
-              <p className="text-[10px] font-medium text-black">You're an inspiration to</p>
+              <p className="text-[10px] font-medium text-black">You&apos;re an inspiration to</p>
               <h2 className="text-[14px] font-semibold text-black">{formatNumber(stats.profile.totalFollowers)}</h2>
               <p className="text-[10px] font-medium text-[#5C5C5C]">people who follow you</p>
             </div>
@@ -203,7 +213,7 @@ export default function BentoGrid({ stats, username }: BentoGridProps) {
             {/* Views Card */}
             <FaEye className="text-[28px] text-[#28d979] mb-2" />
             <div className="space-y-1">
-              <p className="text-[10px] font-medium text-black">You've accumulated</p>
+              <p className="text-[10px] font-medium text-black">You&apos;ve accumulated</p>
               <h2 className="text-[14px] font-semibold text-black">{formatNumber(stats.stats.totalViews)}</h2>
               <p className="text-[10px] font-medium text-[#5C5C5C]">views on your workbooks</p>
             </div>

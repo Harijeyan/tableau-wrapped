@@ -7,7 +7,8 @@ export async function fetchTableauProfile(username: string) {
       throw new Error('Profile not found');
     }
     return await response.json();
-  } catch (error) {
+  } catch {
+    console.error('An error occurred');
     throw new Error('Failed to fetch profile');
   }
 }
@@ -21,7 +22,8 @@ export async function fetchTableauWorkbooks(username: string) {
       throw new Error('Workbooks not found');
     }
     return await response.json();
-  } catch (error) {
+  } catch {
+    console.error('An error occurred');
     throw new Error('Failed to fetch workbooks');
   }
 }
@@ -33,7 +35,8 @@ export async function fetchTableauStats(username: string) {
       throw new Error('Failed to fetch data');
     }
     return await response.json();
-  } catch (error) {
+  } catch {
+    console.error('An error occurred');
     throw error;
   }
 }

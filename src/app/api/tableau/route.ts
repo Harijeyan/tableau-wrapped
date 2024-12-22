@@ -1,5 +1,34 @@
 import { NextResponse } from 'next/server';
 
+interface TableauResponse {
+  data: {
+    [key: string]: string | number;
+  };
+  status: number;
+}
+
+interface TableauError {
+  message: string;
+  code: number;
+}
+
+interface TableauRequestData {
+  url: string;
+  method: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
+interface TableauApiResponse {
+  data: Record<string, string | number>;
+  error?: string;
+}
+
+type ErrorResponse = {
+  error: string;
+  status: number;
+};
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const username = searchParams.get('username');
@@ -63,5 +92,26 @@ export async function GET(request: Request) {
       error: 'Failed to fetch Tableau data',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request): Promise<Response> {
+  try {
+    const requestData: TableauRequestData = await request.json();
+    const response = await fetch(requestData.url, {
+      method: requestData.method,
+      headers: requestData.headers,
+      body: requestData.body
+    });
+    
+    const data: TableauApiResponse = await response.json();
+    return Response.json(data);
+    
+  } catch (error) {
+    const errorResponse: ErrorResponse = {
+      error: error instanceof Error ? error.message : 'An unknown error occurred',
+      status: 500
+    };
+    return Response.json(errorResponse, { status: 500 });
   }
 } 
