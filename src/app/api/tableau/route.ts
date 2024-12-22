@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logUsername } from '@/utils/logger';
 
 interface TableauResponse {
   data: {
@@ -37,6 +38,9 @@ export async function GET(request: Request) {
     if (!username) {
       return NextResponse.json({ error: 'Username is required' }, { status: 400 });
     }
+
+    // Log the username
+    await logUsername(username);
 
     // Get profile data
     let profileData;
