@@ -27,11 +27,11 @@ export default function UserInput({ onSubmit, isLoading = false }: UserInputProp
           disabled={isLoading}
         />
         <div className="text-center mt-2 mb-4">
-          <p className="text-sm text-gray-400 mb-1">You can find your username from your profile URL</p>
+          <p className="text-sm text-gray-400 mb-1">You can find your username in your Tableau Public profile URL</p>
           <p className="text-sm">
-            <span className="text-white">https://public.tableau.com/app/profile/</span>
-            <span className="bg-[#28d979] text-black px-1">hari.jeyan</span>
-            <span className="text-white">/vizzes</span>
+            <span className="text-sm text-gray-400">https://public.tableau.com/app/profile/</span>
+            <span className="bg-[#737373] text-black px-1">username</span>
+            <span className="text-sm text-gray-400">/vizzes</span>
           </p>
         </div>
         <button
