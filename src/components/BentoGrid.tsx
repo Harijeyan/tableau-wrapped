@@ -19,7 +19,7 @@ const getLegacyBadge = (joinDate: number | null) => {
   if (joinDate === null || joinDate === undefined || joinDate === 0) {
     return {
       badge: "Legacy Creator 🏆",
-      description: "Part of Tableau&apos;s history since the early days",
+      description: "Part of Tableau's history since the early days",
       class: "legacy-member"
     };
   }
@@ -139,7 +139,7 @@ export default function BentoGrid({ stats }: BentoGridProps) {
         link.click();
       } catch (error) {
         console.error('Error generating image:', error);
-        handleError(error);
+        handleError(error as Error);
       }
     }
   };
