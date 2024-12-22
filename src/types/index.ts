@@ -12,20 +12,21 @@ export interface TableauProfile {
 export interface TableauStats {
   profile: {
     name: string;
+    profileName: string;
     title: string;
+    organization: string;
     avatarUrl: string;
     totalFollowers: number;
     totalFollowing: number;
-    joinDate: number | null;
+    joinDate: number;
   };
   stats: {
-    totalWorkbooks: number;
-    totalViews: number;
-    totalFavorites: number;
     yearsOnPlatform: number;
     monthsOnPlatform: number;
     daysOnPlatform: number;
+    totalWorkbooks: number;
+    totalViews: number;
+    totalFavorites: number;
   };
+  generatedAt: string;
 }
-
-export type { DataType };
