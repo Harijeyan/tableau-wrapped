@@ -97,9 +97,13 @@ export async function GET(request: Request) {
 
     const joinDate = new Date(profileData.createdAt);
     const now = new Date();
-    const yearsOnPlatform = now.getFullYear() - joinDate.getFullYear();
-    const monthsOnPlatform = now.getMonth() - joinDate.getMonth();
-    const daysOnPlatform = now.getDate() - joinDate.getDate();
+    const diffTime = Math.abs(now.getTime() - joinDate.getTime());
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    const years = Math.floor(diffDays / 365);
+    const remainingDays = diffDays % 365;
+    const months = Math.floor(remainingDays / 30);
+    const days = remainingDays % 30;
 
     const response = {
       profile: {
@@ -113,9 +117,9 @@ export async function GET(request: Request) {
         joinDate: profileData.createdAt,
       },
       stats: {
-        yearsOnPlatform: yearsOnPlatform,
-        monthsOnPlatform: monthsOnPlatform,
-        daysOnPlatform: daysOnPlatform,
+        yearsOnPlatform: years,
+        monthsOnPlatform: months,
+        daysOnPlatform: days,
         totalWorkbooks: profileData.visibleWorkbookCount,
         totalViews: totalViews,
         totalFavorites: totalFavorites
